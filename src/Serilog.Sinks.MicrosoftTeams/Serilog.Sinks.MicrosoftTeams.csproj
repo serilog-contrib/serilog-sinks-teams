@@ -3,6 +3,16 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.1</TargetFramework>
     <RootNamespace>Serilog</RootNamespace>
+    <Authors>Dmytro Dziuma</Authors>
+    <Company />
+    <Version>0.1.0</Version>
+    <Description>A Serilog event sink that writes to Microsoft Teams</Description>
+    <RepositoryUrl>https://github.com/DixonDs/serilog-sinks-teams</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/DixonDs/serilog-sinks-teams</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>The initial release</PackageReleaseNotes>
+    <PackageTags>serilog logging</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
