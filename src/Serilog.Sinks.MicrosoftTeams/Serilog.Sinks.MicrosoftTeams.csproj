@@ -12,7 +12,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>The initial release</PackageReleaseNotes>
-    <PackageTags>serilog logging</PackageTags>
+    <PackageTags>serilog logging teams</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
