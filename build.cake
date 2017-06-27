@@ -1,3 +1,5 @@
+#tool "nuget:?package=xunit.runner.console"
+
 #load "parameters.cake"
 
 var parameters = BuildParameters.GetParameters(Context);
@@ -39,12 +41,20 @@ Task("Build")
     );
 });
 
+Task("Test")
+    .IsDependentOn("Build")
+    .Does(() =>
+{
+    DotNetCoreTest("src/Serilog.Sinks.MicrosoftTeams.Tests/Serilog.Sinks.MicrosoftTeams.Tests.csproj");
+});
+
+
 Task("Pack")
     .IsDependentOn("Build")
     .Does(() =>
 {
     var outputPath = MakeAbsolute(Directory("build")).FullPath;
-    MSBuild("src/Serilog.Sinks.MicrosoftTeams.sln", new MSBuildSettings
+    MSBuild("src/Serilog.Sinks.MicrosoftTeams/Serilog.Sinks.MicrosoftTeams.csproj", new MSBuildSettings
         {
             ToolPath = parameters.MSBuildPath
         }
@@ -67,6 +77,7 @@ Task("Restore-Version-Info")
 });
 
 Task("Default")
+    .IsDependentOn("Test")
     .IsDependentOn("Pack")
     .IsDependentOn("Restore-Version-Info")
     .Does(() =>
