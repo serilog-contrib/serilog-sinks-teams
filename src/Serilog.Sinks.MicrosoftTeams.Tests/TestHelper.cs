@@ -56,7 +56,7 @@ namespace Serilog.Sinks.MicrosoftTeams.Tests
 
                 while (count-- > 0)
                 {
-                    using (var requestContext = await listener.AcceptAsync().WithTimeout(TimeSpan.FromSeconds(1)).ConfigureAwait(false))
+                    using (var requestContext = await listener.AcceptAsync().WithTimeout(TimeSpan.FromSeconds(30)).ConfigureAwait(false))
                     {
                         var body = ReadBodyStream(requestContext.Request.Body);
                         result.Add(body);
