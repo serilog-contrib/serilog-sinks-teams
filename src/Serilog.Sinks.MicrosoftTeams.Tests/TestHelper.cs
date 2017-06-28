@@ -34,7 +34,11 @@ namespace Serilog.Sinks.MicrosoftTeams.Tests
         {
             var logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
-                .WriteTo.MicrosoftTeams(TestWebHook, LogEventLevel.Verbose, "Integration Tests")
+                .WriteTo.MicrosoftTeams(new MicrosoftTeamsSinkOptions
+                {
+                    WebHookUri = TestWebHook,
+                    Title = "Integration Tests"
+                }, LogEventLevel.Verbose)
                 .CreateLogger();
 
             return logger;
