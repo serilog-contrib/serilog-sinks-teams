@@ -21,7 +21,7 @@ namespace Serilog
         /// </example>
         /// </summary>
         /// <param name="loggerSinkConfiguration">Instance of <see cref="LoggerSinkConfiguration"/> object.</param>
-        /// <param name="webhookUrl">Slack team post URI.</param>
+        /// <param name="webhookUrl">Microsoft teams post URI.</param>
         /// <param name="batchSizeLimit">The time to wait between checking for event batches.</param>
         /// <param name="period">The time to wait between checking for event batches.</param>
         /// <param name="title">Title that should be passed to the message.</param>
