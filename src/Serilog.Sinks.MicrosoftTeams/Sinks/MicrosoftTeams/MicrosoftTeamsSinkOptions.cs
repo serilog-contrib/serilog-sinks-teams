@@ -12,11 +12,18 @@ namespace Serilog.Sinks.MicrosoftTeams
         /// </summary>
         public string WebHookUri { get; set; }
         
+        /// <summary>
+        /// Optional: Format provider used for formatting the message.
+        /// </summary>
         public IFormatProvider FormatProvider { get; set; }
+
+        /// <summary>
+        /// Optional: Title of message.
+        /// </summary>
         public string Title { get; set; }
 
         /// <summary>
-        /// Optional: How many messages to send to Slack at once. Defaults to 50.
+        /// Optional: How many messages to send to microsoft teams at once. Defaults to 50.
         /// </summary>
         public int BatchSizeLimit { get; set; } = 50;
 
