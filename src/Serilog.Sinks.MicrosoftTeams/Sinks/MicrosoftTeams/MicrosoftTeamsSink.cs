@@ -1,13 +1,12 @@
 ﻿using Newtonsoft.Json;
-using Serilog.Core;
 using Serilog.Events;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Serilog.Sinks.PeriodicBatching;
+using System.Text;
+using Serilog.Debugging;
 
 namespace Serilog.Sinks.MicrosoftTeams
 {
@@ -16,11 +15,11 @@ namespace Serilog.Sinks.MicrosoftTeams
     /// </summary>
     public class MicrosoftTeamsSink : PeriodicBatchingSink
     {
-        private static HttpClient Client = new HttpClient();
+        private readonly static HttpClient Client = new HttpClient();
 
         private readonly MicrosoftTeamsSinkOptions _options;
 
-        private static readonly JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
+        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore
         };
@@ -37,11 +36,14 @@ namespace Serilog.Sinks.MicrosoftTeams
 
         protected override async Task EmitBatchAsync(IEnumerable<LogEvent> events)
         {
-            foreach(var logevent in events)
+            foreach(var logEvent in events)
             {
-                var message = CreateMessage(logevent);
-                var json = JsonConvert.SerializeObject(message, jsonSerializerSettings);
-                await Client.PostAsync(_options.WebHookUri, new StringContent(json));
+                var message = CreateMessage(logEvent);
+                var json = JsonConvert.SerializeObject(message, JsonSerializerSettings);
+                var result = await Client.PostAsync(_options.WebHookUri, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(false);
+
+                if (!result.IsSuccessStatusCode)
+                    throw new LoggingFailedException($"Received failed result {result.StatusCode} when posting events to Microsoft Teams");
             }
         }
 

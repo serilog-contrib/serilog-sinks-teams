@@ -21,7 +21,7 @@ namespace Serilog
         /// </example>
         /// </summary>
         /// <param name="loggerSinkConfiguration">Instance of <see cref="LoggerSinkConfiguration"/> object.</param>
-        /// <param name="webhookUrl">Microsoft teams post URI.</param>
+        /// <param name="webhookUri">Microsoft teams post URI.</param>
         /// <param name="batchSizeLimit">The time to wait between checking for event batches.</param>
         /// <param name="period">The time to wait between checking for event batches.</param>
         /// <param name="title">Title that should be passed to the message.</param>
@@ -29,7 +29,7 @@ namespace Serilog
         /// <param name="restrictedToMinimumLevel"><see cref="LogEventLevel"/> value that specifies minimum logging level that will be allowed to be logged.</param>
         /// <returns>Instance of <see cref="LoggerConfiguration"/> object.</returns>
         public static LoggerConfiguration MicrosoftTeams(
-            this LoggerSinkConfiguration loggerConfiguration,
+            this LoggerSinkConfiguration loggerSinkConfiguration,
             string webHookUri,
             string title = null,
             int? batchSizeLimit = null,
@@ -37,32 +37,10 @@ namespace Serilog
             IFormatProvider formatProvider = null,
             LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum)
         {
-            var microsoftTeamsSinkOptions = new MicrosoftTeamsSinkOptions
-            {
-                WebHookUri = webHookUri,
-            };
 
-            if (!string.IsNullOrEmpty(title))
-            {
-                microsoftTeamsSinkOptions.Title = title;
-            }
+            var microsoftTeamsSinkOptions = new MicrosoftTeamsSinkOptions(webHookUri, title, batchSizeLimit, period, formatProvider);
 
-            if (batchSizeLimit.HasValue)
-            {
-                microsoftTeamsSinkOptions.BatchSizeLimit = batchSizeLimit.Value;
-            }
-
-            if (period.HasValue)
-            {
-                microsoftTeamsSinkOptions.Period = period.Value;
-            }
-
-            if (formatProvider != null)
-            {
-                microsoftTeamsSinkOptions.FormatProvider = formatProvider;
-            }
-
-            return loggerConfiguration.MicrosoftTeams(microsoftTeamsSinkOptions, restrictedToMinimumLevel);
+            return loggerSinkConfiguration.MicrosoftTeams(microsoftTeamsSinkOptions, restrictedToMinimumLevel);
         }
 
         /// <summary>

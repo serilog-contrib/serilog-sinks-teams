@@ -7,29 +7,51 @@ namespace Serilog.Sinks.MicrosoftTeams
     /// </summary>
     public class MicrosoftTeamsSinkOptions
     {
+        private static readonly TimeSpan DefaultPeriod = TimeSpan.FromSeconds(5);
+        private const int DefaultBatchSizeLimit = 50;
+
+        public MicrosoftTeamsSinkOptions(string webHookUri, string title, int? batchSizeLimit = null, TimeSpan? period = null, IFormatProvider formatProvider = null)
+        {
+            if (webHookUri == null)
+            {
+                throw new ArgumentNullException(nameof(webHookUri));
+            }
+
+            if (string.IsNullOrEmpty(webHookUri))
+            {
+                throw new ArgumentException(nameof(webHookUri));
+            }
+
+            WebHookUri = webHookUri;
+            Title = title;
+            BatchSizeLimit = batchSizeLimit ?? DefaultBatchSizeLimit;
+            Period = period ?? DefaultPeriod;
+            FormatProvider = formatProvider;
+        }
+
         /// <summary>
         /// Required: The incoming webhook URI from your microsoft teams integrations page.
         /// </summary>
-        public string WebHookUri { get; set; }
+        public string WebHookUri { get; }
         
         /// <summary>
         /// Optional: Format provider used for formatting the message.
         /// </summary>
-        public IFormatProvider FormatProvider { get; set; }
+        public IFormatProvider FormatProvider { get; }
 
         /// <summary>
         /// Optional: Title of message.
         /// </summary>
-        public string Title { get; set; }
+        public string Title { get; }
 
         /// <summary>
-        /// Optional: How many messages to send to microsoft teams at once. Defaults to 50.
+        /// Optional: How many messages to send to microsoft teams at once.
         /// </summary>
-        public int BatchSizeLimit { get; set; } = 50;
+        public int BatchSizeLimit { get; }
 
         /// <summary>
-        /// Optional: The maximum period between message batches. Defaults to 5 seconds.
+        /// Optional: The maximum period between message batches.
         /// </summary>
-        public TimeSpan Period { get; set; } = TimeSpan.FromSeconds(5);
+        public TimeSpan Period { get; }
     }
 }
