@@ -5,7 +5,6 @@
     <RootNamespace>Serilog</RootNamespace>
     <Authors>Dmytro Dziuma</Authors>
     <Company />
-    <Version>0.1.0</Version>
     <Description>A Serilog event sink that writes to Microsoft Teams</Description>
     <RepositoryUrl>https://github.com/DixonDs/serilog-sinks-teams</RepositoryUrl>
     <PackageProjectUrl>https://github.com/DixonDs/serilog-sinks-teams</PackageProjectUrl>
