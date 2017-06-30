@@ -34,7 +34,7 @@ namespace Serilog.Sinks.MicrosoftTeams.Tests
         {
             var logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
-                .WriteTo.MicrosoftTeams(TestWebHook, LogEventLevel.Verbose, "Integration Tests")
+                .WriteTo.MicrosoftTeams(new MicrosoftTeamsSinkOptions(TestWebHook, "Integration Tests"), LogEventLevel.Verbose)
                 .CreateLogger();
 
             return logger;
@@ -52,7 +52,7 @@ namespace Serilog.Sinks.MicrosoftTeams.Tests
 
                 while (count-- > 0)
                 {
-                    using (var requestContext = await listener.AcceptAsync().WithTimeout(TimeSpan.FromSeconds(1)).ConfigureAwait(false))
+                    using (var requestContext = await listener.AcceptAsync().WithTimeout(TimeSpan.FromSeconds(6)).ConfigureAwait(false))
                     {
                         var body = ReadBodyStream(requestContext.Request.Body);
                         result.Add(body);
