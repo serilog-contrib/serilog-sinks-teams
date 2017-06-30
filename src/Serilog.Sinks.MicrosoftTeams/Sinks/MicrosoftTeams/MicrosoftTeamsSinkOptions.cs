@@ -3,14 +3,23 @@ using System;
 namespace Serilog.Sinks.MicrosoftTeams
 {
     /// <summary>
-    /// Container for all Microsoft Teams sink configuration.
+    /// Container for all Microsoft Teams sink configurations.
     /// </summary>
     public class MicrosoftTeamsSinkOptions
     {
         private static readonly TimeSpan DefaultPeriod = TimeSpan.FromSeconds(5);
         private const int DefaultBatchSizeLimit = 50;
 
-        public MicrosoftTeamsSinkOptions(string webHookUri, string title, int? batchSizeLimit = null, TimeSpan? period = null, IFormatProvider formatProvider = null)
+        /// <summary>
+        /// Create an instance of the Microsoft Teams options container.
+        /// </summary>
+        /// <param name="webHookUri">The incoming webhook URI to the Microsoft Teams channel.</param>
+        /// <param name="title">The title of messages.</param>
+        /// <param name="batchSizeLimit">The maximum number of events to post in a single batch.</param>
+        /// <param name="period"> The time to wait between checking for event batches.</param>
+        /// <param name="formatProvider">The format provider used for formatting the message.</param>
+        public MicrosoftTeamsSinkOptions(string webHookUri, string title, int? batchSizeLimit = null,
+            TimeSpan? period = null, IFormatProvider formatProvider = null)
         {
             if (webHookUri == null)
             {
@@ -30,28 +39,28 @@ namespace Serilog.Sinks.MicrosoftTeams
         }
 
         /// <summary>
-        /// Required: The incoming webhook URI from your microsoft teams integrations page.
+        /// The incoming webhook URI to the Microsoft Teams channel.
         /// </summary>
         public string WebHookUri { get; }
-        
-        /// <summary>
-        /// Optional: Format provider used for formatting the message.
-        /// </summary>
-        public IFormatProvider FormatProvider { get; }
 
         /// <summary>
-        /// Optional: Title of message.
+        /// The title of messages.
         /// </summary>
         public string Title { get; }
 
         /// <summary>
-        /// Optional: How many messages to send to microsoft teams at once.
+        /// The maximum number of events to post in a single batch.
         /// </summary>
         public int BatchSizeLimit { get; }
 
         /// <summary>
-        /// Optional: The maximum period between message batches.
+        /// The time to wait between checking for event batches.
         /// </summary>
         public TimeSpan Period { get; }
+
+        /// <summary>
+        /// The format provider used for formatting the message.
+        /// </summary>
+        public IFormatProvider FormatProvider { get; }
     }
 }

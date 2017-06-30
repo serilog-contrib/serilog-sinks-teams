@@ -1,5 +1,4 @@
 ﻿using Serilog.Configuration;
-using Serilog.Core;
 using Serilog.Events;
 using Serilog.Sinks.MicrosoftTeams;
 using System;
@@ -21,12 +20,13 @@ namespace Serilog
         /// </example>
         /// </summary>
         /// <param name="loggerSinkConfiguration">Instance of <see cref="LoggerSinkConfiguration"/> object.</param>
-        /// <param name="webhookUri">Microsoft teams post URI.</param>
-        /// <param name="batchSizeLimit">The time to wait between checking for event batches.</param>
-        /// <param name="period">The time to wait between checking for event batches.</param>
-        /// <param name="title">Title that should be passed to the message.</param>
-        /// <param name="formatProvider"><see cref="IFormatProvider"/> used to format the message.</param>
-        /// <param name="restrictedToMinimumLevel"><see cref="LogEventLevel"/> value that specifies minimum logging level that will be allowed to be logged.</param>
+        /// <param name="webHookUri">The incoming webhook URI to the Microsoft Teams channel.</param>
+        /// <param name="title">The title of messages.</param>
+        /// <param name="batchSizeLimit">The maximum number of events to post in a single batch.</param>
+        /// <param name="period"> The time to wait between checking for event batches.</param>
+        /// <param name="formatProvider">The format provider used for formatting the message.</param>
+        /// <param name="restrictedToMinimumLevel"><see cref="LogEventLevel"/> value that specifies minimum logging
+        /// level that will be allowed to be logged.</param>
         /// <returns>Instance of <see cref="LoggerConfiguration"/> object.</returns>
         public static LoggerConfiguration MicrosoftTeams(
             this LoggerSinkConfiguration loggerSinkConfiguration,
@@ -37,8 +37,8 @@ namespace Serilog
             IFormatProvider formatProvider = null,
             LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum)
         {
-
-            var microsoftTeamsSinkOptions = new MicrosoftTeamsSinkOptions(webHookUri, title, batchSizeLimit, period, formatProvider);
+            var microsoftTeamsSinkOptions = new MicrosoftTeamsSinkOptions(webHookUri, title, batchSizeLimit, period,
+                formatProvider);
 
             return loggerSinkConfiguration.MicrosoftTeams(microsoftTeamsSinkOptions, restrictedToMinimumLevel);
         }
@@ -48,9 +48,10 @@ namespace Serilog
         /// </summary>
         /// <param name="loggerSinkConfiguration">Instance of <see cref="LoggerSinkConfiguration"/> object.</param>
         /// <param name="microsoftTeamsSinkOptions">The microsoft teams sink options object.</param>
-        /// <param name="restrictedToMinimumLevel"><see cref="LogEventLevel"/> value that specifies minimum logging level that will be allowed to be logged.</param>
+        /// <param name="restrictedToMinimumLevel"><see cref="LogEventLevel"/> value that specifies minimum logging
+        /// level that will be allowed to be logged.</param>
         /// <returns>Instance of <see cref="LoggerConfiguration"/> object.</returns>
-        public static LoggerConfiguration  MicrosoftTeams(
+        public static LoggerConfiguration MicrosoftTeams(
             this LoggerSinkConfiguration loggerSinkConfiguration,
             MicrosoftTeamsSinkOptions microsoftTeamsSinkOptions,
             LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum)

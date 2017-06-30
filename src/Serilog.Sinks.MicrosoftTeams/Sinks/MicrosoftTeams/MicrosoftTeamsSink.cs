@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
+using Serilog.Debugging;
 using Serilog.Events;
+using Serilog.Sinks.PeriodicBatching;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
-using Serilog.Sinks.PeriodicBatching;
 using System.Text;
-using Serilog.Debugging;
+using System.Threading.Tasks;
 
 namespace Serilog.Sinks.MicrosoftTeams
 {
@@ -15,14 +15,14 @@ namespace Serilog.Sinks.MicrosoftTeams
     /// </summary>
     public class MicrosoftTeamsSink : PeriodicBatchingSink
     {
-        private readonly static HttpClient Client = new HttpClient();
-
-        private readonly MicrosoftTeamsSinkOptions _options;
+        private static readonly HttpClient Client = new HttpClient();
 
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore
         };
+
+        private readonly MicrosoftTeamsSinkOptions _options;
 
         /// <summary>
         /// Initializes new instance of <see cref="MicrosoftTeamsSink"/>.
@@ -34,19 +34,23 @@ namespace Serilog.Sinks.MicrosoftTeams
             _options = options;
         }
 
+        /// <inheritdoc cref="PeriodicBatchingSink"/>
         protected override async Task EmitBatchAsync(IEnumerable<LogEvent> events)
         {
-            foreach(var logEvent in events)
+            foreach (var logEvent in events)
             {
                 var message = CreateMessage(logEvent);
                 var json = JsonConvert.SerializeObject(message, JsonSerializerSettings);
                 var result = await Client.PostAsync(_options.WebHookUri, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(false);
 
                 if (!result.IsSuccessStatusCode)
+                {
                     throw new LoggingFailedException($"Received failed result {result.StatusCode} when posting events to Microsoft Teams");
+                }
             }
         }
 
+        /// <inheritdoc cref="PeriodicBatchingSink"/>
         protected override void Dispose(bool disposing)
         {
             Client.Dispose();
