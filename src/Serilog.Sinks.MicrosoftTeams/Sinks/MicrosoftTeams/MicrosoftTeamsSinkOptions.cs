@@ -7,16 +7,19 @@ namespace Serilog.Sinks.MicrosoftTeams
     /// </summary>
     public class MicrosoftTeamsSinkOptions
     {
-        private static readonly TimeSpan DefaultPeriod = TimeSpan.FromSeconds(5);
-        private const int DefaultBatchSizeLimit = 50;
+        private static readonly TimeSpan DefaultPeriod = TimeSpan.FromSeconds(1);
+
+        private const int DefaultBatchSizeLimit = 1;
 
         /// <summary>
         /// Create an instance of the Microsoft Teams options container.
         /// </summary>
         /// <param name="webHookUri">The incoming webhook URI to the Microsoft Teams channel.</param>
         /// <param name="title">The title of messages.</param>
-        /// <param name="batchSizeLimit">The maximum number of events to post in a single batch.</param>
-        /// <param name="period"> The time to wait between checking for event batches.</param>
+        /// <param name="batchSizeLimit">The maximum number of events to post in a single batch; defaults to 1 if
+        /// not provided i.e. no batching by default.</param>
+        /// <param name="period">The time to wait between checking for event batches; defaults to 1 sec if not
+        /// provided.</param>
         /// <param name="formatProvider">The format provider used for formatting the message.</param>
         public MicrosoftTeamsSinkOptions(string webHookUri, string title, int? batchSizeLimit = null,
             TimeSpan? period = null, IFormatProvider formatProvider = null)

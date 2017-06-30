@@ -22,8 +22,10 @@ namespace Serilog
         /// <param name="loggerSinkConfiguration">Instance of <see cref="LoggerSinkConfiguration"/> object.</param>
         /// <param name="webHookUri">The incoming webhook URI to the Microsoft Teams channel.</param>
         /// <param name="title">The title of messages.</param>
-        /// <param name="batchSizeLimit">The maximum number of events to post in a single batch.</param>
-        /// <param name="period"> The time to wait between checking for event batches.</param>
+        /// <param name="batchSizeLimit">The maximum number of events to post in a single batch; defaults to 1 if
+        /// not provided i.e. no batching by default.</param>
+        /// <param name="period">The time to wait between checking for event batches; defaults to 1 sec if not
+        /// provided.</param>
         /// <param name="formatProvider">The format provider used for formatting the message.</param>
         /// <param name="restrictedToMinimumLevel"><see cref="LogEventLevel"/> value that specifies minimum logging
         /// level that will be allowed to be logged.</param>
