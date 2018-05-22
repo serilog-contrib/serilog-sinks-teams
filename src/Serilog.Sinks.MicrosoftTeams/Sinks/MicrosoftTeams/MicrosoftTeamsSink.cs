@@ -53,8 +53,8 @@ namespace Serilog.Sinks.MicrosoftTeams
         /// <inheritdoc cref="PeriodicBatchingSink"/>
         protected override void Dispose(bool disposing)
         {
-            Client.Dispose();
             base.Dispose(disposing);
+            Client.Dispose();
         }
 
         private MicrosoftTeamsMessageCard CreateMessage(LogEvent logEvent)
