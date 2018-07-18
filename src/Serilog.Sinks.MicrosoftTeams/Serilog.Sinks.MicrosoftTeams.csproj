@@ -10,12 +10,13 @@
     <PackageProjectUrl>https://github.com/DixonDs/serilog-sinks-teams</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>The initial release</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed the HTTP client disposal issue</PackageReleaseNotes>
     <PackageTags>serilog logging teams</PackageTags>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Copyright>Copyright 2018 (c). All rights reserved.</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
