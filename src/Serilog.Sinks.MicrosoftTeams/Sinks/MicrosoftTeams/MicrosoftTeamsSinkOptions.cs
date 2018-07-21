@@ -21,8 +21,9 @@ namespace Serilog.Sinks.MicrosoftTeams
         /// <param name="period">The time to wait between checking for event batches; defaults to 1 sec if not
         /// provided.</param>
         /// <param name="formatProvider">The format provider used for formatting the message.</param>
+        /// <param name="renderProperties">Render or not the message properties.</param>
         public MicrosoftTeamsSinkOptions(string webHookUri, string title, int? batchSizeLimit = null,
-            TimeSpan? period = null, IFormatProvider formatProvider = null)
+            TimeSpan? period = null, IFormatProvider formatProvider = null, bool? renderProperties = null)
         {
             if (webHookUri == null)
             {
@@ -39,6 +40,7 @@ namespace Serilog.Sinks.MicrosoftTeams
             BatchSizeLimit = batchSizeLimit ?? DefaultBatchSizeLimit;
             Period = period ?? DefaultPeriod;
             FormatProvider = formatProvider;
+            RenderProperties = renderProperties ?? true;
         }
 
         /// <summary>
@@ -65,5 +67,10 @@ namespace Serilog.Sinks.MicrosoftTeams
         /// The format provider used for formatting the message.
         /// </summary>
         public IFormatProvider FormatProvider { get; }
+
+        /// <summary>
+        /// Render the message properties.
+        /// </summary>
+        public bool RenderProperties { get; }
     }
 }

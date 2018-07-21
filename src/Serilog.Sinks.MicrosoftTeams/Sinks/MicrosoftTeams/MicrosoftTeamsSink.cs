@@ -29,7 +29,7 @@ namespace Serilog.Sinks.MicrosoftTeams
         /// </summary>
         /// <param name="options">Microsoft teams sink options object.</param>
         public MicrosoftTeamsSink(MicrosoftTeamsSinkOptions options)
-                : base(options.BatchSizeLimit, options.Period)
+            : base(options.BatchSizeLimit, options.Period)
         {
             _options = options;
         }
@@ -66,14 +66,16 @@ namespace Serilog.Sinks.MicrosoftTeams
                 Title = _options.Title,
                 Text = renderedMessage,
                 Color = GetAttachmentColor(logEvent.Level),
-                Sections = new[]
-                {
-                    new MicrosoftTeamsMessageSection
+                Sections = _options.RenderProperties
+                    ? new[]
                     {
-                        Title = "Properties",
-                        Facts = GetFacts(logEvent).ToArray()
+                        new MicrosoftTeamsMessageSection
+                        {
+                            Title = "Properties",
+                            Facts = GetFacts(logEvent).ToArray()
+                        }
                     }
-                }
+                    : Enumerable.Empty<MicrosoftTeamsMessageSection>().ToArray()
             };
 
             return request;
