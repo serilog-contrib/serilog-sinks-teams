@@ -39,6 +39,8 @@ namespace Serilog.Sinks.MicrosoftTeams
         {
             foreach (var logEvent in events)
             {
+                if (logEvent.Level < _options.MinimumLogEventLevel)
+                    continue;
                 var message = CreateMessage(logEvent);
                 var json = JsonConvert.SerializeObject(message, JsonSerializerSettings);
                 var result = await Client.PostAsync(_options.WebHookUri, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(false);
