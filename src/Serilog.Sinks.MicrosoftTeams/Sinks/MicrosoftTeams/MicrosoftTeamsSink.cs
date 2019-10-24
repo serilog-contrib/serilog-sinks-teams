@@ -45,16 +45,24 @@ namespace Serilog.Sinks.MicrosoftTeams
         /// <inheritdoc cref="PeriodicBatchingSink"/>
         protected override async Task EmitBatchAsync(IEnumerable<LogEvent> events)
         {
-            foreach (var logEvent in events)
+            var localEvents = events as LogEvent[] ?? events.ToArray();
+            var exceptions = new List<Exception>(localEvents.Length);
+            
+            foreach (var logEvent in localEvents)
             {
-                var message = CreateMessage(logEvent);
-                var json = JsonConvert.SerializeObject(message, JsonSerializerSettings);
-                var result = await _httpClient.PostAsync(_options.WebHookUri, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(false);
-
-                if (!result.IsSuccessStatusCode)
+                try
                 {
-                    throw new LoggingFailedException($"Received failed result {result.StatusCode} when posting events to Microsoft Teams");
+                    await PostRequestAsync(logEvent);
                 }
+                catch (LoggingFailedException e)
+                {
+                    exceptions.Add(e);
+                }
+            }
+
+            if (exceptions.Any())
+            {
+                throw new AggregateException(exceptions);
             }
         }
 
@@ -135,6 +143,18 @@ namespace Serilog.Sinks.MicrosoftTeams
 
                 default:
                     return "777777";
+            }
+        }
+
+        private async Task PostRequestAsync(LogEvent logEvent)
+        {
+            var message = CreateMessage(logEvent);
+            var json = JsonConvert.SerializeObject(message, JsonSerializerSettings);
+            var result = await _httpClient.PostAsync(_options.WebHookUri, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(false);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new LoggingFailedException($"Received failed result {result.StatusCode} when posting events to Microsoft Teams");
             }
         }
     }
