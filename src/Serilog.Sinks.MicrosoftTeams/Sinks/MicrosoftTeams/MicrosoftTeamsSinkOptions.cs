@@ -23,6 +23,13 @@ namespace Serilog.Sinks.MicrosoftTeams
         /// <param name="period">The time to wait between checking for event batches; defaults to 1 sec if not
         /// provided.</param>
         /// <param name="formatProvider">The format provider used for formatting the message.</param>
+        /// <param name="httpClient">
+        /// The <see cref="HttpClient"/> used by the <see cref="MicrosoftTeamsSink"/> to send the messages.
+        /// If the <see cref="HttpClient"/> is not provided, a private <see cref="HttpClient"/> is created by default.
+        /// </param>
+        /// <remarks>
+        /// If you provide the <paramref name="httpClient"/>, it will not be disposed by the <see cref="MicrosoftTeamsSink"/>.
+        /// </remarks>
         public MicrosoftTeamsSinkOptions(string webHookUri, string title, int? batchSizeLimit = null,
             TimeSpan? period = null, IFormatProvider formatProvider = null, HttpClient httpClient = null)
         {
@@ -69,6 +76,9 @@ namespace Serilog.Sinks.MicrosoftTeams
         /// </summary>
         public IFormatProvider FormatProvider { get; }
         
+        /// <summary>
+        /// The <see cref="HttpClient"/> used by the <see cref="MicrosoftTeamsSink"/> to send the messages.
+        /// </summary>
         public HttpClient HttpClient { get; }
     }
 }
