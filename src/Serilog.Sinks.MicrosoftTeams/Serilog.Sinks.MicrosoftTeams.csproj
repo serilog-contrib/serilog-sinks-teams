@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Serilog</RootNamespace>
     <Authors>Dmytro Dziuma</Authors>
+    <Version>0.3.0</Version>
     <Company />
     <Description>A Serilog event sink that writes to Microsoft Teams</Description>
     <RepositoryUrl>https://github.com/DixonDs/serilog-sinks-teams</RepositoryUrl>
