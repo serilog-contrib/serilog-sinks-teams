@@ -10,12 +10,14 @@ using System.Threading.Tasks;
 
 namespace Serilog.Sinks.MicrosoftTeams
 {
+    using System;
+
     /// <summary>
     /// Implements <see cref="PeriodicBatchingSink"/> and provides means needed for sending Serilog log events to Microsoft Teams.
     /// </summary>
     public class MicrosoftTeamsSink : PeriodicBatchingSink
     {
-        private static readonly HttpClient Client = new HttpClient();
+        private static readonly Lazy<HttpClient> BuiltInHttpClient = new Lazy<HttpClient>(() => new HttpClient(), true);
 
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
@@ -23,6 +25,10 @@ namespace Serilog.Sinks.MicrosoftTeams
         };
 
         private readonly MicrosoftTeamsSinkOptions _options;
+        
+        private readonly HttpClient _httpClient;
+
+        private readonly bool _ownHttpClient;
 
         /// <summary>
         /// Initializes new instance of <see cref="MicrosoftTeamsSink"/>.
@@ -32,21 +38,31 @@ namespace Serilog.Sinks.MicrosoftTeams
                 : base(options.BatchSizeLimit, options.Period)
         {
             _options = options;
+            _httpClient = options.HttpClient ?? BuiltInHttpClient.Value;
+            _ownHttpClient = options.HttpClient is null;
         }
 
         /// <inheritdoc cref="PeriodicBatchingSink"/>
         protected override async Task EmitBatchAsync(IEnumerable<LogEvent> events)
         {
-            foreach (var logEvent in events)
+            var localEvents = events as LogEvent[] ?? events.ToArray();
+            var exceptions = new List<Exception>(localEvents.Length);
+            
+            foreach (var logEvent in localEvents)
             {
-                var message = CreateMessage(logEvent);
-                var json = JsonConvert.SerializeObject(message, JsonSerializerSettings);
-                var result = await Client.PostAsync(_options.WebHookUri, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(false);
-
-                if (!result.IsSuccessStatusCode)
+                try
                 {
-                    throw new LoggingFailedException($"Received failed result {result.StatusCode} when posting events to Microsoft Teams");
+                    await PostRequestAsync(logEvent);
                 }
+                catch (LoggingFailedException e)
+                {
+                    exceptions.Add(e);
+                }
+            }
+
+            if (exceptions.Any())
+            {
+                throw new AggregateException(exceptions);
             }
         }
 
@@ -54,7 +70,11 @@ namespace Serilog.Sinks.MicrosoftTeams
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            Client.Dispose();
+
+            if (_ownHttpClient && BuiltInHttpClient.IsValueCreated)
+            {
+                BuiltInHttpClient.Value.Dispose();    
+            }
         }
 
         private MicrosoftTeamsMessageCard CreateMessage(LogEvent logEvent)
@@ -123,6 +143,18 @@ namespace Serilog.Sinks.MicrosoftTeams
 
                 default:
                     return "777777";
+            }
+        }
+
+        private async Task PostRequestAsync(LogEvent logEvent)
+        {
+            var message = CreateMessage(logEvent);
+            var json = JsonConvert.SerializeObject(message, JsonSerializerSettings);
+            var result = await _httpClient.PostAsync(_options.WebHookUri, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(false);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new LoggingFailedException($"Received failed result {result.StatusCode} when posting events to Microsoft Teams");
             }
         }
     }
