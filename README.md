@@ -7,7 +7,7 @@
 A Serilog event sink that writes to [Microsoft Teams](https://teams.microsoft.com).
 
 **Package** - [Serilog.Sinks.MicrosoftTeams](https://www.nuget.org/packages/Serilog.Sinks.MicrosoftTeams/)
-| **Platforms** - .NETStandard 1.1
+| **Platforms** - .NETStandard 2.0
 
 You need to add an "Incoming Webhook" connector to your Teams channel and get it's URL. `title` is optional but can help your distinguish logs coming from different sources.
 
