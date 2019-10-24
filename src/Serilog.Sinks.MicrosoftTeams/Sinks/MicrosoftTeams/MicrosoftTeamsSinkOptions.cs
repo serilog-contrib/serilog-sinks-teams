@@ -2,6 +2,8 @@ using System;
 
 namespace Serilog.Sinks.MicrosoftTeams
 {
+    using System.Net.Http;
+
     /// <summary>
     /// Container for all Microsoft Teams sink configurations.
     /// </summary>
@@ -22,7 +24,7 @@ namespace Serilog.Sinks.MicrosoftTeams
         /// provided.</param>
         /// <param name="formatProvider">The format provider used for formatting the message.</param>
         public MicrosoftTeamsSinkOptions(string webHookUri, string title, int? batchSizeLimit = null,
-            TimeSpan? period = null, IFormatProvider formatProvider = null)
+            TimeSpan? period = null, IFormatProvider formatProvider = null, HttpClient httpClient = null)
         {
             if (webHookUri == null)
             {
@@ -39,6 +41,7 @@ namespace Serilog.Sinks.MicrosoftTeams
             BatchSizeLimit = batchSizeLimit ?? DefaultBatchSizeLimit;
             Period = period ?? DefaultPeriod;
             FormatProvider = formatProvider;
+            HttpClient = httpClient;
         }
 
         /// <summary>
@@ -65,5 +68,7 @@ namespace Serilog.Sinks.MicrosoftTeams
         /// The format provider used for formatting the message.
         /// </summary>
         public IFormatProvider FormatProvider { get; }
+        
+        public HttpClient HttpClient { get; }
     }
 }

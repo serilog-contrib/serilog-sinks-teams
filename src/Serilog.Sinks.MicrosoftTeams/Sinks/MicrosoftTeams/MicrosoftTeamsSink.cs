@@ -10,12 +10,14 @@ using System.Threading.Tasks;
 
 namespace Serilog.Sinks.MicrosoftTeams
 {
+    using System;
+
     /// <summary>
     /// Implements <see cref="PeriodicBatchingSink"/> and provides means needed for sending Serilog log events to Microsoft Teams.
     /// </summary>
     public class MicrosoftTeamsSink : PeriodicBatchingSink
     {
-        private static readonly HttpClient Client = new HttpClient();
+        private static readonly Lazy<HttpClient> BuiltInHttpClient = new Lazy<HttpClient>(() => new HttpClient(), true);
 
         private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
         {
@@ -23,6 +25,10 @@ namespace Serilog.Sinks.MicrosoftTeams
         };
 
         private readonly MicrosoftTeamsSinkOptions _options;
+        
+        private readonly HttpClient _httpClient;
+
+        private readonly bool _ownHttpClient;
 
         /// <summary>
         /// Initializes new instance of <see cref="MicrosoftTeamsSink"/>.
@@ -32,6 +38,8 @@ namespace Serilog.Sinks.MicrosoftTeams
                 : base(options.BatchSizeLimit, options.Period)
         {
             _options = options;
+            _httpClient = options.HttpClient ?? BuiltInHttpClient.Value;
+            _ownHttpClient = options.HttpClient is null;
         }
 
         /// <inheritdoc cref="PeriodicBatchingSink"/>
@@ -41,7 +49,7 @@ namespace Serilog.Sinks.MicrosoftTeams
             {
                 var message = CreateMessage(logEvent);
                 var json = JsonConvert.SerializeObject(message, JsonSerializerSettings);
-                var result = await Client.PostAsync(_options.WebHookUri, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(false);
+                var result = await _httpClient.PostAsync(_options.WebHookUri, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(false);
 
                 if (!result.IsSuccessStatusCode)
                 {
@@ -54,7 +62,11 @@ namespace Serilog.Sinks.MicrosoftTeams
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            Client.Dispose();
+
+            if (_ownHttpClient && BuiltInHttpClient.IsValueCreated)
+            {
+                BuiltInHttpClient.Value.Dispose();    
+            }
         }
 
         private MicrosoftTeamsMessageCard CreateMessage(LogEvent logEvent)
