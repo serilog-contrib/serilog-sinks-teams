@@ -20,10 +20,6 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
-<!--  <ItemGroup>-->
-<!--    <Compile Include="..\..\AssemblyVersionInfo.cs" Link="Properties\AssemblyVersionInfo.cs" />-->
-<!--  </ItemGroup>-->
-
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="Serilog" Version="2.9.0" />
